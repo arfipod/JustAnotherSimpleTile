@@ -71,9 +71,19 @@ private fun tileLayout(
     return PrimaryLayout.Builder(requestParams.deviceConfiguration)
         .setResponsiveContentInsetEnabled(true)
         .setContent(
-            Text.Builder(context, "Hello World!")
-                .setColor(argb(Colors.DEFAULT.onSurface))
-                .setTypography(Typography.TYPOGRAPHY_CAPTION1)
+            LayoutElementBuilders.Column.Builder()
+                .addContent(
+                    Text.Builder(context, "Hello World!")
+                        .setColor(argb(Colors.DEFAULT.onSurface))
+                        .setTypography(Typography.TYPOGRAPHY_CAPTION1)
+                        .build()
+                )
+                .addContent(
+                    Text.Builder(context, "Second line of text")
+                        .setColor(argb(Colors.DEFAULT.onSurface))
+                        .setTypography(Typography.TYPOGRAPHY_CAPTION1)
+                        .build()
+                )
                 .build()
         ).build()
 }
