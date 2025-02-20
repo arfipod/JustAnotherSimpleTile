@@ -19,7 +19,7 @@ import com.google.android.horologist.tiles.SuspendingTileService
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
-private const val RESOURCES_VERSION = "0"
+private const val RESOURCES_VERSION: String = "0"
 
 /**
  * Skeleton for a tile with no images.
@@ -48,7 +48,7 @@ private fun tile(
     requestParams: RequestBuilders.TileRequest,
     context: Context,
 ): TileBuilders.Tile {
-    val singleTileTimeline = TimelineBuilders.Timeline.Builder()
+    val singleTileTimeline: TimelineBuilders.Timeline = TimelineBuilders.Timeline.Builder()
         .addTimelineEntry(
             TimelineBuilders.TimelineEntry.Builder()
                 .setLayout(
@@ -60,8 +60,10 @@ private fun tile(
         )
         .build()
 
+    // TODO Adjust refresh interval so it is refreshed exactly once time is updated
     return TileBuilders.Tile.Builder()
         .setResourcesVersion(RESOURCES_VERSION)
+        .setFreshnessIntervalMillis(60 * 1000)
         .setTileTimeline(singleTileTimeline)
         .build()
 }
@@ -84,7 +86,7 @@ private fun tileLayout(
                 .addContent(
                     Text.Builder(context, formattedTime)
                         .setColor(argb(Colors.DEFAULT.onSurface))
-                        .setTypography(Typography.TYPOGRAPHY_CAPTION1)
+                        .setTypography(Typography.TYPOGRAPHY_DISPLAY1)
                         .build()
                 )
                 .addContent(
