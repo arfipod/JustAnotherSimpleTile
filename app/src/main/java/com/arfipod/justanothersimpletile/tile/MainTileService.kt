@@ -16,6 +16,8 @@ import androidx.wear.tiles.tooling.preview.TilePreviewData
 import androidx.wear.tooling.preview.devices.WearDevices
 import com.google.android.horologist.annotations.ExperimentalHorologistApi
 import com.google.android.horologist.tiles.SuspendingTileService
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 private const val RESOURCES_VERSION = "0"
 
@@ -68,18 +70,25 @@ private fun tileLayout(
     requestParams: RequestBuilders.TileRequest,
     context: Context,
 ): LayoutElementBuilders.LayoutElement {
+
+    val now: LocalDateTime = LocalDateTime.now()
+    val timeFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm")
+    val dateFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
+    val formattedTime: String = now.format(timeFormatter)
+    val formattedDate: String = now.format(dateFormatter)
+
     return PrimaryLayout.Builder(requestParams.deviceConfiguration)
         .setResponsiveContentInsetEnabled(true)
         .setContent(
             LayoutElementBuilders.Column.Builder()
                 .addContent(
-                    Text.Builder(context, "Hello World!")
+                    Text.Builder(context, formattedTime)
                         .setColor(argb(Colors.DEFAULT.onSurface))
                         .setTypography(Typography.TYPOGRAPHY_CAPTION1)
                         .build()
                 )
                 .addContent(
-                    Text.Builder(context, "Second line of text")
+                    Text.Builder(context, formattedDate)
                         .setColor(argb(Colors.DEFAULT.onSurface))
                         .setTypography(Typography.TYPOGRAPHY_CAPTION1)
                         .build()
