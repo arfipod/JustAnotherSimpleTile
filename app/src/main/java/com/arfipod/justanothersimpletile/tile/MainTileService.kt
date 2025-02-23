@@ -1,7 +1,9 @@
 package com.arfipod.justanothersimpletile.tile
 
 import android.content.Context
+import android.hardware.Sensor
 import androidx.wear.protolayout.ColorBuilders.argb
+import androidx.wear.protolayout.DimensionBuilders
 import androidx.wear.protolayout.LayoutElementBuilders
 import androidx.wear.protolayout.ResourceBuilders
 import androidx.wear.protolayout.TimelineBuilders
@@ -27,6 +29,7 @@ private const val RESOURCES_VERSION: String = "0"
  */
 @OptIn(ExperimentalHorologistApi::class)
 class MainTileService : SuspendingTileService() {
+    val context: Context = this
     companion object
     {
         var isFirstRefresh: Boolean = true
@@ -97,6 +100,9 @@ private fun tileLayout(
     val formattedTime: String = now.format(timeFormatter)
     val formattedDate: String = now.format(dateFormatter)
 
+    val beatsPerMinute: Int = 60
+    val totalSteps: Int = 10000
+
     return PrimaryLayout.Builder(requestParams.deviceConfiguration)
         .setResponsiveContentInsetEnabled(true)
         .setContent(
@@ -113,6 +119,33 @@ private fun tileLayout(
                         .setTypography(Typography.TYPOGRAPHY_CAPTION1)
                         .build()
                 )
+                /*.addContent(
+                    LayoutElementBuilders.Spacer.Builder()
+                        .setHeight(DimensionBuilders.dp(8f))
+                        .build()
+                )
+                .addContent(
+                    LayoutElementBuilders.Row.Builder()
+                        .addContent(
+                            Text.Builder(context, "💙 $beatsPerMinute")
+                                .setColor(argb(Colors.DEFAULT.onSurface))
+                                .setTypography(Typography.TYPOGRAPHY_CAPTION3)
+                                .build()
+                        )
+                        .addContent(
+                            LayoutElementBuilders.Spacer.Builder()
+                                .setWidth(DimensionBuilders.dp(16f))
+                                .build()
+                        )
+                        .addContent(
+                            Text.Builder(context, "👣 $totalSteps")
+                                .setColor(argb(Colors.DEFAULT.onSurface))
+                                .setTypography(Typography.TYPOGRAPHY_CAPTION3)
+                                .build()
+                        )
+                        .build()
+                )*/
+
                 .build()
         ).build()
 }
