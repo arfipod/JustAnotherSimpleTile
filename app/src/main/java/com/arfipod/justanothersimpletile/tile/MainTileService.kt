@@ -14,6 +14,7 @@ import androidx.wear.tiles.TileBuilders
 import androidx.wear.tiles.tooling.preview.Preview
 import androidx.wear.tiles.tooling.preview.TilePreviewData
 import androidx.wear.tooling.preview.devices.WearDevices
+import com.arfipod.justanothersimpletile.tile.MainTileService.Companion.isFirstRefresh
 import com.google.android.horologist.annotations.ExperimentalHorologistApi
 import com.google.android.horologist.tiles.SuspendingTileService
 import java.time.LocalDateTime
@@ -26,6 +27,10 @@ private const val RESOURCES_VERSION: String = "0"
  */
 @OptIn(ExperimentalHorologistApi::class)
 class MainTileService : SuspendingTileService() {
+    companion object
+    {
+        var isFirstRefresh: Boolean = true
+    }
 
     override suspend fun resourcesRequest(
         requestParams: RequestBuilders.ResourcesRequest
@@ -48,6 +53,20 @@ private fun tile(
     requestParams: RequestBuilders.TileRequest,
     context: Context,
 ): TileBuilders.Tile {
+    // Set tile refresh period
+    val now: LocalDateTime = LocalDateTime.now()
+    val millisElapsed: Long = (now.second * 1000L) + (now.nano / 1000000L)
+    // Calculate remaining millisecond until the start of the next minute
+    val initialDelay: Long = 60 * 1000L - millisElapsed
+    val freshnessInterval: Long = if (isFirstRefresh)
+    {
+        isFirstRefresh = false
+        initialDelay
+    } else
+    {
+        60 * 1000L // Refresh every minute
+    }
+
     val singleTileTimeline: TimelineBuilders.Timeline = TimelineBuilders.Timeline.Builder()
         .addTimelineEntry(
             TimelineBuilders.TimelineEntry.Builder()
@@ -60,10 +79,9 @@ private fun tile(
         )
         .build()
 
-    // TODO Adjust refresh interval so it is refreshed exactly once time is updated
     return TileBuilders.Tile.Builder()
         .setResourcesVersion(RESOURCES_VERSION)
-        .setFreshnessIntervalMillis(60 * 1000)
+        .setFreshnessIntervalMillis(freshnessInterval)
         .setTileTimeline(singleTileTimeline)
         .build()
 }
@@ -99,7 +117,6 @@ private fun tileLayout(
         ).build()
 }
 
-@Preview(device = WearDevices.SMALL_ROUND)
 @Preview(device = WearDevices.LARGE_ROUND)
 fun tilePreview(context: Context) = TilePreviewData(::resources) {
     tile(it, context)
